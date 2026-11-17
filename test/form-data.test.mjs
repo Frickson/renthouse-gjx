@@ -20,3 +20,8 @@ for(const [n,plan,total] of [[0,[0,0,0],9],[1,[1,0,0],10],[2,[2,0,0],10],[3,[2,1
   const fit=fitContained(w,h,slot);assert.ok(Math.abs(fit.w/fit.h-w/h)<1e-10);assert.ok(fit.w<=slot.w&&fit.h<=slot.h);
  }
 }
+
+const detailed={...list.people[0],address:'Example Street',phone:'00123',bank:'HLB',account:'000123'};
+const parsed=parsePeople(JSON.stringify({version:1,people:[detailed]}))[0];
+assert.equal(parsed.address,'Example Street');assert.equal(parsed.phone,'00123');assert.equal(parsed.bank,'HLB');assert.equal(parsed.account,'000123');
+for(const extra of [{bank:'UNKNOWN'},{account:123},{phone:123},{address:'x'.repeat(241)}])assert.throws(()=>parsePeople(JSON.stringify({version:1,people:[{...detailed,...extra}]})));

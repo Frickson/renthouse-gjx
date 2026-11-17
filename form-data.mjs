@@ -33,6 +33,13 @@ export function parsePeople(text) {
  const ids=new Set();
  return data.people.map(p=>{
   if(!p||typeof p.id!=='string'||!p.id.trim()||ids.has(p.id)||typeof p.name!=='string'||!p.name.trim()||p.name.length>100||typeof p.ic!=='string'||!Array.isArray(p.roles)||!p.roles.length||p.roles.some(r=>!['landlord','witness'].includes(r)))throw new Error('Each person needs a unique id, name, IC string, and landlord/witness roles.');
-  ids.add(p.id);return {id:p.id,name:p.name.trim(),ic:formatIC(p.ic),roles:p.roles};
+  const details={};
+  for(const [key,max] of [['address',240],['phone',50],['bank',10],['account',40]]){
+   if(p[key]===undefined)continue;
+   if(typeof p[key]!=='string'||p[key].length>max)throw new Error(`Invalid ${key} in people list.`);
+   details[key]=p[key].trim();
+  }
+  if(details.bank&&!Object.hasOwn(BANKS,details.bank))throw new Error('Unsupported bank code in people list.');
+  ids.add(p.id);return {id:p.id,name:p.name.trim(),ic:formatIC(p.ic),roles:p.roles,...details};
  });
 }

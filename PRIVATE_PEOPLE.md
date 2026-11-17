@@ -12,7 +12,11 @@ Use this format (all example identities below are fictional). ICs must be string
       "id": "landlord-1",
       "name": "Fictional Landlord",
       "ic": "12345678901234",
-      "roles": ["landlord", "witness"]
+      "roles": ["landlord", "witness"],
+      "address": "1 Fictional Demo Lane, Test City",
+      "phone": "0000000000",
+      "bank": "HLB",
+      "account": "000000000000"
     },
     {
       "id": "witness-1",
@@ -33,3 +37,5 @@ The usual 12-digit Malaysian NRIC uses 6-2-4 formatting. The app also accepts th
 For a public trial, `demo-people.json` loads fictional landlord and witness choices automatically. Keep that file fictional; real names and ICs require a private authenticated service.
 
 Name fields use an explicit dropdown button with clickable options, arrow-key selection, and manual typing. Built-in fictional suggestions remain usable if the repository JSON request fails.
+
+Landlords may include optional `address`, `phone`, `bank`, and `account` strings. Bank codes are `MB`, `HLB`, or `CIMB`; the form shows the full name. Phone and account must be strings to preserve leading zeros. Selecting a landlord fills provided details; missing details remain editable. When changing names, unchanged autofilled details are cleared, while manual edits are preserved. Keep all repository examples fictional.

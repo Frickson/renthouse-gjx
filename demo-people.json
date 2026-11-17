@@ -7,7 +7,11 @@
       "ic": "12345678901234",
       "roles": [
         "landlord"
-      ]
+      ],
+      "address": "1 Fictional Demo Lane, Test City",
+      "phone": "0000000000",
+      "bank": "HLB",
+      "account": "000000000000"
     },
     {
       "id": "demo-witness-a",

@@ -39,7 +39,7 @@ function populatePeople(next){
  for(const [id,role] of selectors){
   const list=$('#'+id+'Options');list.replaceChildren();
   for(const p of people.filter(p=>p.roles.includes(role))){
-   const option=new Option(p.name,p.name);option.dataset.ic=p.ic;list.append(option);
+   const option=new Option(p.name,p.name);option.dataset.ic=p.ic;option.dataset.details=JSON.stringify({address:p.address,phone:p.phone,bank:p.bank,account:p.account});list.append(option);
   }
  }
 }
@@ -49,6 +49,20 @@ function autofillPerson(id,ic){
  const previous=input.dataset.autofilledIc;
  if(option){set(ic,formatIC(option.dataset.ic));input.dataset.autofilledIc=field(ic).value;}
  else if(previous&&field(ic).value===previous){set(ic,'');delete input.dataset.autofilledIc;}
+ if(id==='landlordPerson'){
+  const previousDetails=JSON.parse(input.dataset.autofilledDetails||'{}');
+  const matched=option?.value||'';
+  if(input.dataset.matchedLandlord!==matched){
+   // Remove only values still owned by the previous autofill, preserving manual edits.
+   for(const [name,oldValue] of Object.entries(previousDetails))if(field(name).value===oldValue)set(name,'');
+   const details=option?JSON.parse(option.dataset.details||'{}'):{};
+   const filled={};
+   for(const [key,name] of [['address','landlordAddress'],['phone','landlordContact'],['bank','landlordBank'],['account','landlordAccount']]){
+    if(details[key]){set(name,details[key]);filled[name]=details[key];}
+   }
+   input.dataset.autofilledDetails=JSON.stringify(filled);input.dataset.matchedLandlord=matched;
+  }
+ }
  validateIC(field(ic));
 }
 fetch('demo-people.json').then(response=>{
