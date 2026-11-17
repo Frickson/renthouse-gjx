@@ -1,3 +1,4 @@
+import {setupNamePicker} from './name-picker.mjs';
 import {BANKS, INVENTORY, inventoryLines, formatIC, parsePeople} from './form-data.mjs';
 import {jpegPDF} from './pdfwriter.mjs';
 import {localISODate, plusMonthsInclusive, formatLongDate, formatShortDate, moneyWords, moneyNumber, durationWords, ordinal, integerWords} from './utils.mjs';
@@ -60,6 +61,7 @@ fetch('demo-people.json').then(response=>{
  $('#peopleMessage').textContent='Using built-in demo names. You can also type any name and IC manually.';
 });
 for(const [id,role,name,ic] of selectors){
+ setupNamePicker($('#'+id));
  const onNameChange=()=>{
   autofillPerson(id,ic);
   if(id==='witness1Person')updateWitness();

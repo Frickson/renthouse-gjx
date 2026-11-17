@@ -32,4 +32,4 @@ The usual 12-digit Malaysian NRIC uses 6-2-4 formatting. The app also accepts th
 
 For a public trial, `demo-people.json` loads fictional landlord and witness choices automatically. Keep that file fictional; real names and ICs require a private authenticated service.
 
-Name fields use native suggestions and allow manual typing. Built-in fictional suggestions remain usable if the repository JSON request fails.
+Name fields use an explicit dropdown button with clickable options, arrow-key selection, and manual typing. Built-in fictional suggestions remain usable if the repository JSON request fails.

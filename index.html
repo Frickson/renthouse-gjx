@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RentHouse GJX — Tenancy agreement generator</title>
   <meta name="description" content="Create an unsigned tenancy agreement locally in your browser using an editable, privacy-safe form." />
-  <link rel="stylesheet" href="styles.css" />
-  <script type="module" src="app.js"></script>
+  <link rel="stylesheet" href="styles.css?v=editable-names-2" />
+  <script type="module" src="app.js?v=editable-names-2"></script>
 </head>
 <body>
   <header class="topbar"><div class="topinner"><div class="brand"><span class="brandicon">⌂</span><span>RentHouse <b>GJX</b></span></div><span class="tag">PRIVATE BY DESIGN · BROWSER ONLY</span></div></header>
@@ -31,7 +31,7 @@
           <div class="fields grid-2">
             <p id="peopleMessage" class="span-2 message" role="status"></p>
             <label>Full legal name<input id="landlordPerson" name="landlordName" list="landlordPersonOptions" placeholder="Choose or type a name" autocomplete="off" maxlength="100" required /><datalist id="landlordPersonOptions"><option value="Demo Landlord (fictional)" data-ic="12345678901234"></option></datalist></label>
-            <label>NRIC / ID<input name="landlordNric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" required /></label>
+            <label>NRIC / ID<input type="text" name="landlordNric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" required /></label>
             <label class="span-2">Mailing address<textarea name="landlordAddress" rows="2" placeholder="Full landlord address" required maxlength="240"></textarea></label>
             <label>Contact number<input name="landlordContact" placeholder="Optional" maxlength="50" /></label>
             <label>Bank<select name="landlordBank"><option value="">Select bank</option><option value="MB">Maybank</option><option value="HLB">Hong Leong Bank</option><option value="CIMB">CIMB Bank Sdn Bhd</option></select></label>
@@ -42,7 +42,7 @@
           <div class="section-head"><span class="number">03</span><div><h2>Tenant</h2><p>Names, NRICs and addresses update everywhere they appear.</p></div></div>
           <div class="fields grid-2">
             <label>Full legal name<input name="tenantName" placeholder="As shown on NRIC" required maxlength="100" /></label>
-            <label>NRIC / ID<input name="tenantNric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" required /></label>
+            <label>NRIC / ID<input type="text" name="tenantNric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" required /></label>
             <label class="span-2">Mailing address<textarea name="tenantAddress" rows="2" required placeholder="Full tenant address" maxlength="240"></textarea></label>
             <label class="span-2">Contact number<input name="tenantContact" placeholder="Optional" maxlength="50" /></label>
           </div>
@@ -63,9 +63,9 @@
           <div class="section-head"><span class="number">05</span><div><h2>Unsigned witnesses</h2><p>All four signature lines remain blank. Only printed names and IDs appear.</p></div></div>
           <div class="fields grid-2">
             <label>Landlord witness name<input id="witness1Person" name="witness1Name" list="witness1PersonOptions" placeholder="Choose or type a name" autocomplete="off" maxlength="100" /><datalist id="witness1PersonOptions"><option value="Demo Witness A (fictional)" data-ic="23456789012345"></option><option value="Demo Witness B (fictional)" data-ic="345678901234"></option></datalist></label>
-            <label>Landlord witness NRIC<input name="witness1Nric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" /></label>
+            <label>Landlord witness NRIC<input type="text" name="witness1Nric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" /></label>
             <label>Tenant witness name<input id="witness2Person" name="witness2Name" list="witness2PersonOptions" placeholder="Choose or type a name" autocomplete="off" maxlength="100" /><datalist id="witness2PersonOptions"><option value="Demo Witness A (fictional)" data-ic="23456789012345"></option><option value="Demo Witness B (fictional)" data-ic="345678901234"></option></datalist></label>
-            <label>Tenant witness NRIC<input name="witness2Nric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" /></label>
+            <label>Tenant witness NRIC<input type="text" name="witness2Nric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" /></label>
           </div>
           <label class="checkrow"><input name="sameWitness" type="checkbox" /> Use the landlord's witness for the tenant too</label>
         </section>

@@ -71,4 +71,6 @@ Run `node --test` for form data validation tests. Browser/PDF regression artifac
 
 The public `demo-people.json` contains fictional names and ICs only and loads the dropdowns automatically for testing. Never replace it with real personal data. There is no file-import UI.
 
-Name fields use native suggestions and allow manual typing. Built-in fictional suggestions remain usable if the repository JSON request fails.
+Name fields use an explicit dropdown button with clickable options, arrow-key selection, and manual typing. Built-in fictional suggestions remain usable if the repository JSON request fails.
+
+To verify actual name-field interaction locally, serve the app over HTTP and run `node scripts/check-name-fields.cjs` with Playwright and Chromium installed. This checks mouse/keyboard selection, sequential typing, shared witnesses, and all four IC fields at desktop and mobile widths. ICs use `type="text"` with `inputmode="numeric"` so leading zeros and hyphens are preserved; formatting is applied on blur.
