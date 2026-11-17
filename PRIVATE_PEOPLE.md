@@ -1,6 +1,6 @@
-# Private people list
+# Repository people list
 
-Keep the real file outside this public repository. In section 02, choose your local JSON file. Landlord and witness dropdowns show names; selecting a name fills its IC. A person may have both roles. Manual entry remains available. The list is held only in the current tab; it is never uploaded or stored by the app.
+For the current trial, the website loads `demo-people.json` from GitHub Pages automatically. Section 02 and section 05 show dropdowns of names, and selecting a person fills the IC. There is no upload/import control. Keep this public file fictional. A person may have both landlord and witness roles; manual entry remains available.
 
 Use this format (all example identities below are fictional). ICs must be strings to preserve leading zeros. Version 1 accepts 12 or 14 digits, with or without 6-2-4 or 6-2-6 hyphens.
 
@@ -24,10 +24,10 @@ Use this format (all example identities below are fictional). ICs must be string
 }
 ```
 
-Use unique IDs, names up to 100 characters, at most 200 people and a file smaller than 200 KB. An invalid import leaves the previous list intact.
+Use unique IDs, names up to 100 characters, and at most 200 people.
 
-GitHub Actions Secrets cannot be fetched by this static website at runtime. Injecting a secret into a deployed HTML/JS/JSON asset exposes the names and ICs publicly. If you choose to retain this JSON in a GitHub Secret, `PRIVATE_PEOPLE_JSON` is a suitable name and the entire JSON above is its value format; this app does not retrieve it or publish it. Keep a secure local copy to import. Do not add an Actions step that writes the secret into the Pages artifact. A shared hosted list would require an authenticated backend and access controls.
+GitHub Actions Secrets cannot be fetched by this static website at runtime. Injecting a secret into a deployed HTML/JS/JSON asset exposes the names and ICs publicly. If you choose to retain this JSON in a GitHub Secret, `PRIVATE_PEOPLE_JSON` is a suitable name and the entire JSON above is its value format; this app does not retrieve it or publish it. Real personal data is not connected to this public trial. Do not add an Actions step that writes the secret into the Pages artifact. A shared hosted list would require an authenticated backend and access controls.
 
 The usual 12-digit Malaysian NRIC uses 6-2-4 formatting. The app also accepts the requested 14-digit 6-2-6 format, without adding or removing digits.
 
-For a public trial, `demo-people.json` loads fictional landlord and witness choices automatically. Keep that file fictional; real names and ICs belong only in your private local file.
+For a public trial, `demo-people.json` loads fictional landlord and witness choices automatically. Keep that file fictional; real names and ICs require a private authenticated service.

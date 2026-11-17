@@ -7,8 +7,9 @@ const $ = sel => document.querySelector(sel);
 const form = $('#agreementForm');
 const status = $('#formMessage');
 for(const [id,label] of INVENTORY){
- const row=document.createElement('label');row.textContent=label;
- const input=document.createElement('input');input.name=`inventory_${id}`;input.type='number';input.min='0';input.max='999';input.step='1';input.value='0';
+ const row=document.createElement('label');row.className='inventory-row';
+ const caption=document.createElement('span');caption.textContent=label;row.append(caption);
+ const input=document.createElement('input');input.name=`inventory_${id}`;input.type='number';input.min='0';input.max='999';input.step='1';input.value='0';input.inputMode='numeric';
  row.append(input);$('#inventoryFields').append(row);
 }
 const button = $('#generateBtn');
@@ -39,26 +40,14 @@ function populatePeople(next){
   for(const p of people.filter(p=>p.roles.includes(role)))select.add(new Option(p.name,p.id));
  }
 }
-let privateImportStarted=false;
 fetch('demo-people.json').then(response=>{
  if(!response.ok)throw new Error('Demo list unavailable');
  return response.text();
 }).then(text=>{
- if(privateImportStarted)return;
  populatePeople(parsePeople(text));
  $('#peopleMessage').textContent='Fictional demo names loaded. Choose a saved landlord or witness to try autofill.';
 }).catch(()=>{
- if(!privateImportStarted)$('#peopleMessage').textContent='Demo list unavailable. You can still enter details manually or import a private list.';
-});
-$('#peopleFile').addEventListener('change',async()=>{
- privateImportStarted=true;
- const file=$('#peopleFile').files[0];if(!file)return;
- try{
-  if(file.size>200000)throw new Error('People file must be smaller than 200 KB.');
-  const next=parsePeople(await file.text());populatePeople(next);
-  $('#peopleMessage').textContent=`Loaded ${people.length} people privately in this tab.`;
- }catch{ $('#peopleMessage').textContent='Could not load list. Check the JSON format, unique IDs, roles and 12- or 14-digit ICs. Existing list kept.'; }
- $('#peopleFile').value='';
+ $('#peopleMessage').textContent='Name list unavailable. You can still enter names and ICs manually.';
 });
 for(const [id,role,name,ic] of selectors){
  $('#'+id).addEventListener('change',()=>{

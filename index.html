@@ -29,9 +29,8 @@
         <section class="form-section">
           <div class="section-head"><span class="number">02</span><div><h2>Landlord</h2><p>Cover, signature page, schedule and all footers.</p></div></div>
           <div class="fields grid-2">
-            <label class="span-2">Private people list<input id="peopleFile" type="file" accept=".json,application/json" /><small>Load a private JSON file from your device. Names and ICs stay in this tab; reload to clear them. Never commit this file to the public repository.</small></label>
             <p id="peopleMessage" class="span-2 message" role="status"></p>
-            <label class="span-2">Saved landlord<select id="landlordPerson"><option value="">Enter manually</option></select></label>
+            <label class="span-2">Landlord name from list<select id="landlordPerson"><option value="">Enter manually</option></select></label>
             <label>Full legal name<input name="landlordName" placeholder="As shown on NRIC" required maxlength="100" /></label>
             <label>NRIC / ID<input name="landlordNric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" required /></label>
             <label class="span-2">Mailing address<textarea name="landlordAddress" rows="2" placeholder="Full landlord address" required maxlength="240"></textarea></label>
@@ -64,10 +63,10 @@
         <section class="form-section">
           <div class="section-head"><span class="number">05</span><div><h2>Unsigned witnesses</h2><p>All four signature lines remain blank. Only printed names and IDs appear.</p></div></div>
           <div class="fields grid-2">
-            <label class="span-2">Saved landlord witness<select id="witness1Person"><option value="">Enter manually</option></select></label>
+            <label class="span-2">Landlord witness from list<select id="witness1Person"><option value="">Enter manually</option></select></label>
             <label>Landlord witness name<input name="witness1Name" maxlength="100" placeholder="Witness full name" /></label>
             <label>Landlord witness NRIC<input name="witness1Nric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" /></label>
-            <label class="span-2">Saved tenant witness<select id="witness2Person"><option value="">Enter manually</option></select></label>
+            <label class="span-2">Tenant witness from list<select id="witness2Person"><option value="">Enter manually</option></select></label>
             <label>Tenant witness name<input name="witness2Name" maxlength="100" placeholder="Witness full name" /></label>
             <label>Tenant witness NRIC<input name="witness2Nric" inputmode="numeric" pattern="(?:[0-9]{12}|[0-9]{14}|[0-9]{6}-[0-9]{2}-(?:[0-9]{4}|[0-9]{6}))" maxlength="16" placeholder="123456-78-901234" title="12 or 14 digits, with optional hyphens (6-2-4 or 6-2-6)" /></label>
           </div>
@@ -78,7 +77,7 @@
           <div class="fields">
             <label>Permitted use<input name="permittedUse" maxlength="170" value="Strictly for the PRIVATE RESIDENCE purpose only." /></label>
             <label>Renewal option (up to two lines)<textarea name="renewalOption" rows="2" maxlength="340">One (1) year at prevailing market rate at the time of the renewal or as the landlord and the Tenant mutually agreed thereon.</textarea></label>
-            <fieldset class="inventory"><legend>Inventory quantities</legend><p>Enter the number supplied. Leave 0 for items to omit. Items follow the original agreement, with tables and chairs added.</p><div id="inventoryFields" class="fields grid-2"></div></fieldset>
+            <fieldset class="inventory"><legend>Inventory quantities</legend><p>Enter the number supplied. Leave 0 for items to omit. Items follow the original agreement, with tables and chairs added.</p><div id="inventoryFields" class="inventory-rows"></div></fieldset>
             <label>Additional inventory — one item per line<textarea name="inventory" rows="3" maxlength="1500" placeholder="1 × Dining bench"></textarea><small>Up to 24 PDF rows including the quantities above.</small></label>
             <label>Property photos (optional, up to 10)<input name="photos" id="photos" type="file" accept="image/jpeg,image/png" multiple /><small>Images stay on your device. Auto-arranged (1, 2, or 4 per page), retaining their aspect ratio.</small><small id="photoLayoutSummary" role="status" aria-live="polite"></small></label>
           </div>
