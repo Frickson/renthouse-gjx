@@ -1,5 +1,5 @@
-/** Layout planner for three fixed photo appendix pages (PDF pages 10–12).
- * Up to 10 photos; page sizes stay A4 and never change the agreement's 12-page count.
+/** Layout planner for up to three photo appendix pages (PDF pages 10–12).
+ * Empty appendix pages are omitted; the nine agreement pages remain.
  */
 const PLAN = Object.freeze({
   0:[0,0,0], 1:[1,0,0], 2:[2,0,0], 3:[2,1,0],
@@ -31,3 +31,5 @@ export function fitContained(imgWidth,imgHeight,rect,margin=8,caption=18){
   const w=imgWidth*scale,h=imgHeight*scale;
   return {x:rect.x+(rect.w-w)/2,y:rect.y+margin+(availableH-h)/2,w,h};
 }
+
+export function agreementPageCount(count) { return 9 + photoDistribution(count).filter(Boolean).length; }

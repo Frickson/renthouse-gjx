@@ -1,13 +1,13 @@
 # RentHouse GJX
 
-A privacy-conscious static website that converts an editable tenancy web form into an unsigned, 12-page PDF modelled on an existing Malaysia tenancy agreement. The project uses **no server, account, database, third-party scripts or analytics**. Form values and optional property images are processed entirely within the visitor's browser.
+A privacy-conscious static website that converts an editable tenancy web form into an unsigned, 9–12-page PDF modelled on an existing Malaysia tenancy agreement. The project uses **no server, account, database, third-party scripts or analytics**. Form values and optional property images are processed entirely within the visitor's browser.
 
 ## Use it
 
 1. Open the deployed GitHub Pages website, or run `python3 -m http.server 8000` in this folder and open `http://localhost:8000`.
 2. Fill in the agreement date, start date, term, parties, identity numbers, addresses, rental amount, deposits, witnesses and inventory.
 3. Optionally add up to ten JPG/PNG property photos. The photo appendix (pages 10–12) automatically arranges 1, 2 or 4 images per page, maintaining the original aspect ratio without cropping.
-4. Select **Generate 12-page PDF**.
+4. Select **Generate PDF**.
 5. Select **Open PDF preview** to review it or **Download PDF** to save the finished agreement.
 
 **Important:** Signatures are never carried over. The prior stamping certificate is intentionally excluded. Review the legal wording, parties, dates and obligations; stamp the executed agreement as required by local law. The source agreement contains a reference to a term in "Part V" of its schedule despite the term appearing in "Part IV"; that pre-existing clause is not silently amended.
@@ -26,7 +26,7 @@ A privacy-conscious static website that converts an editable tenancy web form in
 
 ## Automatic photo layout
 
-The site always generates exactly 12 pages, with three pages reserved for the photographic appendix. Uploaded JPG/PNG files are placed in upload order, scaled down to fit the available frame without cropping or stretching. Extra space is intentionally preserved for unusually tall/wide photos.
+The site generates nine agreement pages plus up to three photographic appendix pages. Empty appendix pages are omitted. Uploaded JPG/PNG files are placed in upload order, scaled down to fit the available frame without cropping or stretching. Extra space is intentionally preserved for unusually tall/wide photos.
 
 | Photos | Page 10 | Page 11 | Page 12 |
 |---:|---:|---:|---:|
@@ -35,7 +35,7 @@ The site always generates exactly 12 pages, with three pages reserved for the ph
 | 9 | 4 | 4 | 1 |
 | 10 | 4 | 4 | 2 |
 
-For 1–6 photos, the layout is [1,0,0], [2,0,0], [2,1,0], [2,2,0], [2,2,1], or [2,2,2] respectively. The blank photo appendix pages remain in the 12-page agreement for consistent pagination. Images are never uploaded or stored by the website.
+For 1–6 photos, the layout is [1,0,0], [2,0,0], [2,1,0], [2,2,0], [2,2,1], or [2,2,2] respectively. For example, four photos use two pages with two photos each, producing 11 pages total. With no photos, the agreement has 9 pages. Images are never uploaded or stored by the website.
 
 ## Security and publication
 
@@ -43,7 +43,7 @@ For 1–6 photos, the layout is [1,0,0], [2,0,0], [2,1,0], [2,2,0], [2,2,1], or 
 
 ## PDF fidelity
 
-The fixed text/layout are supplied as rasterized blank-page backgrounds at approximately 2× resolution. The generator overlays editable details in place, then builds an A4-compatible 12-page PDF in the browser, without any external PDF library. It retains the visual arrangement but does **not** retain vector/searchable legal body text; newly entered metadata is searchable, while the underlying body is image-backed. Print and inspect the PDF prior to signing.
+The fixed text/layout are supplied as rasterized blank-page backgrounds at approximately 2× resolution. The generator overlays editable details in place, then builds an A4-compatible 9–12-page PDF in the browser, without any external PDF library. It retains the visual arrangement but does **not** retain vector/searchable legal body text; newly entered metadata is searchable, while the underlying body is image-backed. Print and inspect the PDF prior to signing.
 
 ## Deploy to GitHub Pages
 
@@ -57,4 +57,16 @@ This project is a static website; no API keys, environment variables, hosting pa
 
 ## Local regression tests
 
-`node tests/utils.test.mjs` checks date arithmetic, formatting and monetary values. Chromium end-to-end tests generated 12-page PDFs with fictional sample data, exercised the download button, and checked each 7/8/9/10-photo layout plus the repaired page 9 table border. Browser tests are not shipped as part of the public deployment.
+`node --test` checks IC formats, private people-list validation, inventory quantities, photo grouping, page counts and aspect ratios. Chromium regression checks exercise generation, preview and download with fictional data; generated artifacts stay outside the repository.
+
+## Form updates
+
+IC fields accept 12 or 14 digits, with optional 6-2-4 or 6-2-6 hyphens and automatically insert hyphens when leaving the field. Both the standard NRIC format and the requested 6-2-6 format are supported. Bank and account number are separate; the bank dropdown displays MB (Maybank), HLB (Hong Leong Bank), and CIMB (CIMB Bank Sdn Bhd). The selected abbreviation and account number appear together in the existing PDF bank line.
+
+Landlord and witness choices can come from a private local JSON file; see [private list format](PRIVATE_PEOPLE.md). GitHub Secrets are not exposed to the website. Manual name/IC entry and the same-witness option remain available.
+
+Inventory uses quantities for the source agreement's item types, plus tables and chairs. Zero quantities are omitted. Additional items can be entered one per line; the combined PDF list is limited to 24 rows.
+
+Run `node --test` for form data validation tests. Browser/PDF regression artifacts stay outside the repository.
+
+The public `demo-people.json` contains fictional names and ICs only and loads the dropdowns automatically for testing. Never replace it with real personal data. Import your private file locally to replace the demo list in your tab.

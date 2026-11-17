@@ -1,7 +1,7 @@
 # Codex project instructions — renthouse-gjx
 
 ## Project objective
-Maintain a static, privacy-conscious, client-side web app that lets users fill in tenancy-agreement details, generate an unsigned tenancy PDF matching the approved 12-page template, preview it, and download it.
+Maintain a static, privacy-conscious, client-side web app that lets users fill in tenancy-agreement details, generate an unsigned tenancy PDF matching the approved template with 9 agreement pages and up to 3 photo pages, preview it, and download it.
 
 ## Architecture
 - `index.html` — form structure and field groups
@@ -17,7 +17,7 @@ No backend, database, Node build step, secret, user authentication, telemetry, o
 
 ## Must preserve
 1. Flow: fill form → generate local PDF → preview PDF → download PDF.
-2. Page count exactly 12, A4-compatible. Page 13 of the source contract was a historical stamping certificate and must never be copied into new agreements.
+2. Page count 9–12, A4-compatible: omit empty photo appendix pages. Page 13 of the source contract was a historical stamping certificate and must never be copied into new agreements.
 3. Dates on both page 1 and page 2 must reflect the form's agreement date, while First Schedule dates/duration match the form and computed term.
 4. Page 7 has unsigned signature lines; NEVER reproduce original signatures. Witness names/IDs must follow form inputs (including the option to use the same witness twice).
 5. Page 9 inventory table and border alignment must not break. Verify visually after any table changes.
@@ -29,7 +29,7 @@ No backend, database, Node build step, secret, user authentication, telemetry, o
 - Run `node --test` or `node tests/utils.test.mjs` if tests are available (some earlier visual test artifacts were intentionally omitted from the public repository).
 - Test in Chromium or equivalent against a locally served HTTP URL, not a `file://` origin.
 - Exercise the Generate, Preview and Download buttons with **fictional** names/IDs.
-- Verify generated PDF has 12 pages and date agreement consistency on pages 1, 2 and 8; check witness and rent fields on pages 7–9.
+- Verify generated PDF has 9 agreement pages plus only populated photo appendix pages and date agreement consistency on pages 1, 2 and 8; check witness and rent fields on pages 7–9.
 - Generate 7/8/9/10-photo cases using synthetic portrait/landscape test pictures, verify required grouping and no distortion.
 - Inspect images/screenshots of pages 1, 2, 7, 8, 9, 10 and 12 for clipping/overlaps, especially page 9.
 - Check browser console for errors, mobile-width UI, and GitHub Pages path prefix `/renthouse-gjx/`.

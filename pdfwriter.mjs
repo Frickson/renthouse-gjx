@@ -14,7 +14,7 @@ function pdfLiteral(str){ return String(str).replace(/[^\x20-\x7E]/g,' ').replac
 export function jpegPDF(pages,{documentTitle='Unsigned tenancy agreement'}={}) {
   // Page metadata text is invisible but extractable by PDF readers. The visual
   // content is deliberately flattened for layout fidelity and no dependencies.
-  if(pages.length!==12) throw new Error('Expected exactly 12 tenancy pages.');
+  if(pages.length<9||pages.length>12) throw new Error('Expected 9–12 tenancy pages.');
   const objects=[]; const add=(data)=>{objects.push(typeof data==='string'?ascii(data):data);return objects.length;};
   const catalog=add(''), pagesObj=add(''), font=add('<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman >>');
   const pageRefs=[];

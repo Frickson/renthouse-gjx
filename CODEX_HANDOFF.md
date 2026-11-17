@@ -37,3 +37,7 @@ The website needs no install step or frontend build system. A browser runner may
 
 ## Non-negotiables
 Do NOT publish original signed agreements, originals' NRICs, banking information, signatures, internal property photographs, sensitive outputs, or secrets. Do NOT add a cloud PDF conversion service or analytics without explicit permission.
+
+## Updated form and pagination
+
+The current user request supersedes the original fixed 12-page requirement: retain nine agreement pages and omit empty photo appendix pages (0 photos → 9 pages; 1–2 → 10; 3–4 → 11; 5–10 → 12). Four photos use 2/2. IC fields accept standard 12-digit 6-2-4 and requested 14-digit 6-2-6 formats. Bank and account are separate, inventory uses quantities, and private local JSON imports provide landlord/witness autofill; see PRIVATE_PEOPLE.md. No real identities or original attachment content were added to the repository.

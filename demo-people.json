@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "people": [
+    {
+      "id": "demo-landlord",
+      "name": "Demo Landlord (fictional)",
+      "ic": "12345678901234",
+      "roles": [
+        "landlord"
+      ]
+    },
+    {
+      "id": "demo-witness-a",
+      "name": "Demo Witness A (fictional)",
+      "ic": "23456789012345",
+      "roles": [
+        "witness"
+      ]
+    },
+    {
+      "id": "demo-witness-b",
+      "name": "Demo Witness B (fictional)",
+      "ic": "345678901234",
+      "roles": [
+        "witness"
+      ]
+    }
+  ]
+}

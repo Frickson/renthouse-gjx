@@ -10,3 +10,6 @@
 
 #photoLayoutSummary { display:block; color:#436b70; margin-top:6px; line-height:1.5; }
 #photoLayoutSummary.warning { color:#b45309; font-weight:600; }
+
+select{width:100%;font:inherit;padding:12px 13px;border:1px solid #cfdcd6;border-radius:8px;background:white;color:#203c36;min-height:46px}select:focus{outline:2px solid var(--accent)}
+.inventory{min-width:0;margin:0;padding:16px;border:1px solid var(--line);border-radius:8px}.inventory legend{font-weight:700}.inventory p{font-size:12px;color:var(--muted);margin:0 0 16px}

@@ -1,17 +1,74 @@
+import {BANKS, INVENTORY, inventoryLines, formatIC, parsePeople} from './form-data.mjs';
 import {jpegPDF} from './pdfwriter.mjs';
 import {localISODate, plusMonthsInclusive, formatLongDate, formatShortDate, moneyWords, moneyNumber, durationWords, ordinal, integerWords} from './utils.mjs';
-import {photoDistribution, photoSlots, fitContained} from './photo-layout.mjs';
+import {photoDistribution, photoSlots, fitContained, agreementPageCount} from './photo-layout.mjs';
 
 const $ = sel => document.querySelector(sel);
 const form = $('#agreementForm');
 const status = $('#formMessage');
+for(const [id,label] of INVENTORY){
+ const row=document.createElement('label');row.textContent=label;
+ const input=document.createElement('input');input.name=`inventory_${id}`;input.type='number';input.min='0';input.max='999';input.step='1';input.value='0';
+ row.append(input);$('#inventoryFields').append(row);
+}
 const button = $('#generateBtn');
 const downloadBox = document.createElement('div');
 downloadBox.className = 'download-result';
 downloadBox.id = 'downloadResult';
 downloadBox.hidden = true;
-downloadBox.innerHTML = '<strong>PDF generated successfully</strong><span>12 unsigned pages — ready to review and save.</span><div class="download-actions"><a id="downloadLink" class="download-link" download="Tenancy_Agreement.pdf">Download PDF ↓</a><a id="previewLink" target="_blank" rel="noopener">Open PDF preview ↗</a></div>';
+downloadBox.innerHTML = '<strong>PDF generated successfully</strong><span>Unsigned pages — ready to review and save.</span><div class="download-actions"><a id="downloadLink" class="download-link" download="Tenancy_Agreement.pdf">Download PDF ↓</a><a id="previewLink" target="_blank" rel="noopener">Open PDF preview ↗</a></div>';
 form.querySelector('.actions').insertAdjacentElement('afterend', downloadBox);
+
+let people=[];
+const icNames=['landlordNric','tenantNric','witness1Nric','witness2Nric'];
+function validateIC(input, normalize=false){
+ input.setCustomValidity('');
+ if(!input.value.trim())return;
+ try{const formatted=formatIC(input.value);if(normalize)input.value=formatted;}
+ catch(error){input.setCustomValidity(error.message);}
+}
+for(const name of icNames){
+ field(name).addEventListener('input',()=>validateIC(field(name)));
+ field(name).addEventListener('blur',()=>{validateIC(field(name),true);if(name==='witness1Nric')updateWitness();});
+}
+const selectors=[['landlordPerson','landlord','landlordName','landlordNric'],['witness1Person','witness','witness1Name','witness1Nric'],['witness2Person','witness','witness2Name','witness2Nric']];
+function populatePeople(next){
+ people=next;
+ for(const [id,role] of selectors){
+  const select=$('#'+id);select.replaceChildren(new Option('Enter manually',''));
+  for(const p of people.filter(p=>p.roles.includes(role)))select.add(new Option(p.name,p.id));
+ }
+}
+let privateImportStarted=false;
+fetch('demo-people.json').then(response=>{
+ if(!response.ok)throw new Error('Demo list unavailable');
+ return response.text();
+}).then(text=>{
+ if(privateImportStarted)return;
+ populatePeople(parsePeople(text));
+ $('#peopleMessage').textContent='Fictional demo names loaded. Choose a saved landlord or witness to try autofill.';
+}).catch(()=>{
+ if(!privateImportStarted)$('#peopleMessage').textContent='Demo list unavailable. You can still enter details manually or import a private list.';
+});
+$('#peopleFile').addEventListener('change',async()=>{
+ privateImportStarted=true;
+ const file=$('#peopleFile').files[0];if(!file)return;
+ try{
+  if(file.size>200000)throw new Error('People file must be smaller than 200 KB.');
+  const next=parsePeople(await file.text());populatePeople(next);
+  $('#peopleMessage').textContent=`Loaded ${people.length} people privately in this tab.`;
+ }catch{ $('#peopleMessage').textContent='Could not load list. Check the JSON format, unique IDs, roles and 12- or 14-digit ICs. Existing list kept.'; }
+ $('#peopleFile').value='';
+});
+for(const [id,role,name,ic] of selectors){
+ $('#'+id).addEventListener('change',()=>{
+  const person=people.find(p=>p.id===$('#'+id).value);if(!person)return;
+  set(name,person.name);set(ic,person.ic);validateIC(field(ic));
+  if(id==='witness1Person')updateWitness();
+  updatePreview();clearGenerated();
+ });
+ for(const n of [name,ic])field(n).addEventListener('input',()=>{$('#'+id).value='';});
+}
 
 let currentObjectURL = null;
 let syncing = false;
@@ -34,6 +91,8 @@ function updateWitness() {
  if(!field('sameWitness').checked) return;
  set('witness2Name',value('witness1Name'));
  set('witness2Nric',value('witness1Nric'));
+ field('witness2Nric').setCustomValidity(field('witness1Nric').validationMessage);
+ $('#witness2Person').value=$('#witness1Person').value;
 }
 function updatePreview() {
   const safe = (x,fallback='—')=>value(x)||fallback;
@@ -51,7 +110,9 @@ function updatePhotoLayout() {
   if(count>10){hint.textContent=`${count} selected — please choose at most 10.`;hint.classList.add('warning');return;}
   hint.classList.remove('warning');
   const distribution=photoDistribution(count);
-  hint.textContent=count?`${count} photo${count===1?'':'s'}: page 10 (${distribution[0]}), page 11 (${distribution[1]}), page 12 (${distribution[2]}). Photos auto-fit with no cropping.`:'0 photos selected. Pages 10–12 will be blank.';
+  const total=agreementPageCount(count);
+  el('pageCount',`${total} PAGES`);
+  hint.textContent=count?`${count} photo${count===1?'':'s'}: ${distribution.map((n,i)=>n?`page ${10+i} (${n})`:null).filter(Boolean).join(', ')}. ${total} pages total; no blank photo pages.`:'0 photos selected. 9 agreement pages; no photo appendix.';
 }
 function clearGenerated() {
   if(currentObjectURL) URL.revokeObjectURL(currentObjectURL);
@@ -65,7 +126,7 @@ form.addEventListener('input', event=> {
   if(['witness1Name','witness1Nric'].includes(event.target.name))updateWitness();
   updatePreview();if(generatedFile)clearGenerated();
 });
-field('sameWitness').addEventListener('change',()=>{updateWitness(); if(generatedFile)clearGenerated()});
+field('sameWitness').addEventListener('change',()=>{for(const n of ['witness2Name','witness2Nric'])field(n).readOnly=field('sameWitness').checked;$('#witness2Person').disabled=field('sameWitness').checked;updateWitness(); if(generatedFile)clearGenerated()});
 field('photos').addEventListener('change',()=>{updatePhotoLayout(); if(generatedFile)clearGenerated()});
 $('#autoDeposit').addEventListener('click',()=>{
   const rent=Number(value('monthlyRent')); if(!Number.isFinite(rent)||rent<=0){status.textContent='Enter the monthly rental first.';return;}
@@ -77,6 +138,8 @@ updatePhotoLayout();
 
 function read() {
  const o=Object.fromEntries(new FormData(form));
+ for(const name of icNames)if(o[name]?.trim())o[name]=formatIC(o[name]);
+ if(o.landlordBank&&!Object.hasOwn(BANKS,o.landlordBank))throw new Error('Select a supported bank.');
  for(const name of ['monthlyRent','securityDeposit','utilitiesDeposit','accessDeposit']){
    o[name]=Number(o[name]);if(!Number.isFinite(o[name])||o[name]<0||o[name]>999999999)throw new Error(`Please enter a valid ${name}.`);
  }
@@ -85,7 +148,7 @@ function read() {
  if(!Number.isInteger(o.durationMonths)||o.durationMonths<1||o.durationMonths>120)throw new Error('Duration must be 1–120 months.');
  if(o.startDate>o.endDate)throw new Error('Tenancy end date cannot be earlier than the start date.');
  if(o.sameWitness){o.witness2Name=o.witness1Name; o.witness2Nric=o.witness1Nric;}
- o.inventory=(o.inventory||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+ o.inventory=inventoryLines(o,o.inventory||'');
  if(o.inventory.length>24)throw new Error('Use 24 inventory rows or fewer.');
  if((field('photos').files?.length||0)>10)throw new Error('You can upload up to 10 photos.');
  return o;
@@ -162,7 +225,7 @@ function paintPage(ctx,i,d,photos,photoPages) {
    line(`NRIC No  :   ${d.landlordNric}`,159.9,135,352);
    wrap(`Address  :   ${d.landlordAddress}`,159.9,148.2,349,{size:10.8,line:12,maxLines:2});
    line(`Contact  :   ${d.landlordContact||'—'}`,159.9,173.2,349);
-   line(`Bank Account No : ${d.landlordBank||'—'}`,159.9,192.1,353);
+   line(`Bank Account No : ${[d.landlordBank,d.landlordAccount].filter(Boolean).join(' / ')||'—'}`,159.9,192.1,353);
    line(`Name     :   ${d.tenantName}`,159.9,247,352);
    line(`NRIC No  :   ${d.tenantNric}`,159.9,260,352);
    wrap(`Address  :   ${d.tenantAddress}`,159.9,273,349,{size:10.7,line:12,maxLines:2});
@@ -213,14 +276,15 @@ function paintPage(ctx,i,d,photos,photoPages) {
 }
 
 async function generate(d) {
- const backdrops=await Promise.all(Array.from({length:12},(_,i)=>loadImage(`assets/page-${String(i+1).padStart(2,'0')}.png`)));
  const photoFiles=Array.from(field('photos').files||[]);
  const photos=await Promise.all(photoFiles.map(loadPhoto));
  const distribution=photoDistribution(photos.length);
+ const pageCount=agreementPageCount(photos.length);
+ const backdrops=await Promise.all(Array.from({length:pageCount},(_,i)=>loadImage(`assets/page-${String(i+1).padStart(2,'0')}.png`)));
  const photoPages=[];let offset=0;
  for(const count of distribution){photoPages.push(photos.slice(offset,offset+count).map((image,j)=>({image,number:offset+j+1})));offset+=count;}
  const pages=[];
- for(let i=0;i<12;i++){
+ for(let i=0;i<pageCount;i++){
    const canvas=document.createElement('canvas');canvas.width=Math.round(PAGE_W*RENDER_SCALE);canvas.height=Math.round(PAGE_H*RENDER_SCALE);
    const c=canvas.getContext('2d',{alpha:false}); c.fillStyle='#fff';c.fillRect(0,0,canvas.width,canvas.height);c.scale(RENDER_SCALE,RENDER_SCALE);
    c.drawImage(backdrops[i],0,0,PAGE_W,PAGE_H);
@@ -236,7 +300,7 @@ async function generate(d) {
 }
 form.addEventListener('submit',async e=>{
   e.preventDefault();if(!form.reportValidity())return;
-  button.disabled=true;button.textContent='Generating PDF…';status.textContent='Preparing your 12-page agreement in this browser…';downloadBox.hidden=true;
+  button.disabled=true;button.textContent='Generating PDF…';status.textContent='Preparing your agreement in this browser…';downloadBox.hidden=true;
   try{
     const data=read();
     const pdf=await generate(data);
@@ -245,9 +309,10 @@ form.addEventListener('submit',async e=>{
     const filename=`Tenancy_Agreement_${data.startDate}_${data.endDate}.pdf`;
     $('#downloadLink').href=currentObjectURL;$('#downloadLink').download=filename;
     $('#previewLink').href=currentObjectURL;
+    downloadBox.querySelector('span').textContent=`${agreementPageCount(field('photos').files.length)} unsigned pages — ready to review and save.`;
     downloadBox.hidden=false;
-    status.textContent=`Complete — 12 pages (${(pdf.size/1024/1024).toFixed(1)} MB). Use Download PDF below.`;
+    status.textContent=`Complete — ${agreementPageCount(field('photos').files.length)} pages (${(pdf.size/1024/1024).toFixed(1)} MB). Use Download PDF below.`;
     downloadBox.scrollIntoView({behavior:'smooth',block:'nearest'});
   }catch(error){console.error(error);status.textContent=`Could not generate PDF: ${error.message}`;}
-  finally{button.disabled=false;button.innerHTML='Generate 12-page PDF <span>↗</span>'}
+  finally{button.disabled=false;button.innerHTML='Generate PDF <span>↗</span>'}
 });
