@@ -5,7 +5,7 @@ assert.equal(formatIC('123456-78-9012'),'123456-78-9012');
 assert.equal(formatIC('12345678901234'),'123456-78-901234');
 assert.equal(formatIC('123456-78-901234'),'123456-78-901234');
 for(const bad of ['12345678901','123456-78-901','abcdef78901234','123456--78901234'])assert.throws(()=>formatIC(bad));
-assert.deepEqual(inventoryLines({inventory_airConditioners:'3',inventory_tables:'2'},'1 × Bench'),['3 × Air conditioners','2 × Tables','1 × Bench']);
+assert.deepEqual(inventoryLines({inventory_airConditioners:'3',inventory_tables:'2'},'1 × Bench'),['3 unit air conditional','2 unit table','1 × Bench']);
 assert.throws(()=>inventoryLines({inventory_tables:'1.5'}));
 assert.throws(()=>inventoryLines({},Array(25).fill('x').join('\n')));
 const list={version:1,people:[{id:'a',name:'Fictional A',ic:'12345678901234',roles:['landlord','witness']}]};
@@ -25,3 +25,9 @@ const detailed={...list.people[0],address:'Example Street',phone:'00123',bank:'H
 const parsed=parsePeople(JSON.stringify({version:1,people:[detailed]}))[0];
 assert.equal(parsed.address,'Example Street');assert.equal(parsed.phone,'00123');assert.equal(parsed.bank,'HLB');assert.equal(parsed.account,'000123');
 for(const extra of [{bank:'UNKNOWN'},{account:123},{phone:123},{address:'x'.repeat(241)}])assert.throws(()=>parsePeople(JSON.stringify({version:1,people:[{...detailed,...extra}]})));
+
+const originalQuantities={airConditioners:3,airconControllers:3,kitchenCabinet:1,masterWardrobe:1,secondWardrobe:1,queenBeds:2,queenMattresses:2,ceilingFans:3,fanControllers:3,hoodAndHob:1,waterHeaters:2,refrigerators:1,washingMachines:1,sofas:1,curtains:1};
+const originalEntries=Object.fromEntries(Object.entries(originalQuantities).map(([key,n])=>[`inventory_${key}`,String(n)]));
+assert.deepEqual(inventoryLines(originalEntries),['3 unit air conditional\n(3 controller)','1 set kitchen cabinet','1 set wardrobe\n( master bedroom )','1 set wardrobe\n( second bedroom )','2 unit queen size bed','2 unit queen size mattress','3 unit ceiling fan\n(3 controller)','kitchen hood and hob','2 unit water heater','1 unit refrigerator','1 unit washing machine','1 set sofa','full house curtain']);
+assert.deepEqual(inventoryLines({inventory_airconControllers:'2'}),['2 air conditioner controller']);
+assert.throws(()=>inventoryLines(originalEntries,Array(8).fill('Extra item').join('\n')));

@@ -6,7 +6,7 @@
   <title>RentHouse GJX — Tenancy agreement generator</title>
   <meta name="description" content="Create an unsigned tenancy agreement locally in your browser using an editable, privacy-safe form." />
   <link rel="stylesheet" href="styles.css?v=editable-names-2" />
-  <script type="module" src="app.js?v=editable-names-2"></script>
+  <script type="module" src="app.js?v=inventory-source-3"></script>
 </head>
 <body>
   <header class="topbar"><div class="topinner"><div class="brand"><span class="brandicon">⌂</span><span>RentHouse <b>GJX</b></span></div><span class="tag">PRIVATE BY DESIGN · BROWSER ONLY</span></div></header>
@@ -75,7 +75,7 @@
             <label>Permitted use<input name="permittedUse" maxlength="170" value="Strictly for the PRIVATE RESIDENCE purpose only." /></label>
             <label>Renewal option (up to two lines)<textarea name="renewalOption" rows="2" maxlength="340">One (1) year at prevailing market rate at the time of the renewal or as the landlord and the Tenant mutually agreed thereon.</textarea></label>
             <fieldset class="inventory"><legend>Inventory quantities</legend><p>Enter the number supplied. Leave 0 for items to omit. Items follow the original agreement, with tables and chairs added.</p><div id="inventoryFields" class="inventory-rows"></div></fieldset>
-            <label>Additional inventory — one item per line<textarea name="inventory" rows="3" maxlength="1500" placeholder="1 × Dining bench"></textarea><small>Up to 24 PDF rows including the quantities above.</small></label>
+            <label>Additional inventory — one item per line<textarea name="inventory" rows="3" maxlength="1500" placeholder="1 × Dining bench"></textarea><small>Up to 24 printed lines including controller and room notes.</small></label>
             <label>Property photos (optional, up to 10)<input name="photos" id="photos" type="file" accept="image/jpeg,image/png" multiple /><small>Images stay on your device. Auto-arranged (1, 2, or 4 per page), retaining their aspect ratio.</small><small id="photoLayoutSummary" role="status" aria-live="polite"></small></label>
           </div>
         </section>

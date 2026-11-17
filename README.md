@@ -74,3 +74,5 @@ The public `demo-people.json` contains fictional names and ICs only and loads th
 Name fields use an explicit dropdown button with clickable options, arrow-key selection, and manual typing. Built-in fictional suggestions remain usable if the repository JSON request fails.
 
 To verify actual name-field interaction locally, serve the app over HTTP and run `node scripts/check-name-fields.cjs` with Playwright and Chromium installed. This checks mouse/keyboard selection, sequential typing, shared witnesses, and all four IC fields at desktop and mobile widths. ICs use `type="text"` with `inputmode="numeric"` so leading zeros and hyphens are preserved; formatting is applied on blur.
+
+Inventory output follows the original agreement’s order and unit/set wording. Controller counts appear beneath air conditioners/fans, and wardrobe room labels appear on their own lines. Numbering is consecutive (the original duplicated item 4). The 24-line limit includes these notes.

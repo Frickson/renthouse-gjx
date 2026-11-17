@@ -11,14 +11,37 @@ export const INVENTORY = Object.freeze([
   ['curtains','Full house curtain sets'], ['tables','Tables'], ['chairs','Chairs'],
 ]);
 export function inventoryLines(entries, extra='') {
-  const lines=INVENTORY.flatMap(([id,label])=>{
+  const quantities={};
+  for(const [id] of INVENTORY){
     const raw=entries[`inventory_${id}`];
     const n=raw===''||raw==null?0:Number(raw);
     if(!Number.isInteger(n)||n<0||n>999)throw new Error('Inventory quantities must be whole numbers from 0 to 999.');
-    return n?[`${n} × ${label}`]:[];
-  });
+    quantities[id]=n;
+  }
+  const lines=[];
+  const add=(id,description,note='')=>{
+    const n=quantities[id];if(n)lines.push(description(n)+(note?`\n${note}`:''));
+  };
+  const controllers=(id)=>quantities[id]?`(${quantities[id]} controller)`:'';
+  add('airConditioners',n=>`${n} unit air conditional`,controllers('airconControllers'));
+  if(!quantities.airConditioners)add('airconControllers',n=>`${n} air conditioner controller`);
+  add('kitchenCabinet',n=>`${n} set kitchen cabinet`);
+  add('masterWardrobe',n=>`${n} set wardrobe`,'( master bedroom )');
+  add('secondWardrobe',n=>`${n} set wardrobe`,'( second bedroom )');
+  add('queenBeds',n=>`${n} unit queen size bed`);
+  add('queenMattresses',n=>`${n} unit queen size mattress`);
+  add('ceilingFans',n=>`${n} unit ceiling fan`,controllers('fanControllers'));
+  if(!quantities.ceilingFans)add('fanControllers',n=>`${n} ceiling fan controller`);
+  add('hoodAndHob',n=>n===1?'kitchen hood and hob':`${n} set kitchen hood and hob`);
+  add('waterHeaters',n=>`${n} unit water heater`);
+  add('refrigerators',n=>`${n} unit refrigerator`);
+  add('washingMachines',n=>`${n} unit washing machine`);
+  add('sofas',n=>`${n} set sofa`);
+  add('curtains',n=>n===1?'full house curtain':`${n} set full house curtain`);
+  add('tables',n=>`${n} unit table`);
+  add('chairs',n=>`${n} unit chair`);
   lines.push(...extra.split(/\r?\n/).map(x=>x.trim()).filter(Boolean));
-  if(lines.length>24)throw new Error('Use 24 inventory rows or fewer, including additional items.');
+  if(lines.reduce((count,item)=>count+item.split('\n').length,0)>24)throw new Error('Use 24 inventory lines or fewer, including controller and room notes.');
   return lines;
 }
 export function formatIC(raw) {

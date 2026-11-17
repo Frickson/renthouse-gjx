@@ -269,9 +269,13 @@ function paintPage(ctx,i,d,photos,photoPages) {
    wrap(d.permittedUse,159.9,77,345,{size:10.7,line:11,maxLines:1});
    wrap(d.renewalOption,159.9,124,352,{size:10.7,line:13,maxLines:2});
    text(d.propertyAddress,132.9,214.2,{size:10.6,maxWidth:355});
+   let inventoryY=248.2;
    for(const [n,item] of d.inventory.entries()){
-     text(`${n+1}.`,79.5,248.2+n*20.7,{size:11});
-     text(item,115.5,248.2+n*20.7,{size:11,maxWidth:410});
+     text(`${n+1}.`,79.5,inventoryY,{size:11});
+     for(const line of item.split('\n')){
+       text(line,115.5,inventoryY,{size:11,maxWidth:410});
+       inventoryY+=20.7;
+     }
    }
  }
  if(i>=9 && i<=11){
