@@ -36,7 +36,7 @@ const selectors=[['landlordPerson','landlord','landlordName','landlordNric'],['w
 function populatePeople(next){
  people=next;
  for(const [id,role] of selectors){
-  const select=$('#'+id);select.replaceChildren(new Option('Enter manually',''));
+  const select=$('#'+id);select.replaceChildren(new Option(role==='landlord'?'Select landlord':'Select witness',''));
   for(const p of people.filter(p=>p.roles.includes(role)))select.add(new Option(p.name,p.id));
  }
 }
@@ -45,18 +45,17 @@ fetch('demo-people.json').then(response=>{
  return response.text();
 }).then(text=>{
  populatePeople(parsePeople(text));
- $('#peopleMessage').textContent='Fictional demo names loaded. Choose a saved landlord or witness to try autofill.';
+ $('#peopleMessage').textContent='Fictional demo names loaded. Select a landlord or witness name to try autofill.';
 }).catch(()=>{
- $('#peopleMessage').textContent='Name list unavailable. You can still enter names and ICs manually.';
+ $('#peopleMessage').textContent='Name list unavailable. Please reload to try again.';
 });
 for(const [id,role,name,ic] of selectors){
  $('#'+id).addEventListener('change',()=>{
-  const person=people.find(p=>p.id===$('#'+id).value);if(!person)return;
-  set(name,person.name);set(ic,person.ic);validateIC(field(ic));
+  const person=people.find(p=>p.id===$('#'+id).value);
+  set(ic,person?.ic||'');validateIC(field(ic));
   if(id==='witness1Person')updateWitness();
   updatePreview();clearGenerated();
  });
- for(const n of [name,ic])field(n).addEventListener('input',()=>{$('#'+id).value='';});
 }
 
 let currentObjectURL = null;
@@ -66,7 +65,11 @@ let generatedFile = null;
 const PAGE_W = 595.44, PAGE_H = 841.68, RENDER_SCALE = 2;
 
 function field(name) {return form.elements.namedItem(name)}
-function value(name) {return String(field(name)?.value ?? '').trim()}
+function value(name) {
+ const input=field(name);
+ if(input?.hasAttribute('data-person'))return people.find(p=>p.id===input.value)?.name||'';
+ return String(input?.value ?? '').trim();
+}
 function set(name, val) {field(name).value = String(val)}
 const el = (id,v) => { const e=document.getElementById(id); if(e) e.textContent = v };
 function updateTerm() {
@@ -78,7 +81,7 @@ function updateTerm() {
 }
 function updateWitness() {
  if(!field('sameWitness').checked) return;
- set('witness2Name',value('witness1Name'));
+ set('witness2Name',field('witness1Name').value);
  set('witness2Nric',value('witness1Nric'));
  field('witness2Nric').setCustomValidity(field('witness1Nric').validationMessage);
  $('#witness2Person').value=$('#witness1Person').value;
@@ -115,7 +118,7 @@ form.addEventListener('input', event=> {
   if(['witness1Name','witness1Nric'].includes(event.target.name))updateWitness();
   updatePreview();if(generatedFile)clearGenerated();
 });
-field('sameWitness').addEventListener('change',()=>{for(const n of ['witness2Name','witness2Nric'])field(n).readOnly=field('sameWitness').checked;$('#witness2Person').disabled=field('sameWitness').checked;updateWitness(); if(generatedFile)clearGenerated()});
+field('sameWitness').addEventListener('change',()=>{field('witness2Nric').readOnly=field('sameWitness').checked;$('#witness2Person').disabled=field('sameWitness').checked;updateWitness(); if(generatedFile)clearGenerated()});
 field('photos').addEventListener('change',()=>{updatePhotoLayout(); if(generatedFile)clearGenerated()});
 $('#autoDeposit').addEventListener('click',()=>{
   const rent=Number(value('monthlyRent')); if(!Number.isFinite(rent)||rent<=0){status.textContent='Enter the monthly rental first.';return;}
@@ -127,6 +130,7 @@ updatePhotoLayout();
 
 function read() {
  const o=Object.fromEntries(new FormData(form));
+ for(const [, ,name] of selectors)o[name]=value(name);
  for(const name of icNames)if(o[name]?.trim())o[name]=formatIC(o[name]);
  if(o.landlordBank&&!Object.hasOwn(BANKS,o.landlordBank))throw new Error('Select a supported bank.');
  for(const name of ['monthlyRent','securityDeposit','utilitiesDeposit','accessDeposit']){
@@ -214,7 +218,7 @@ function paintPage(ctx,i,d,photos,photoPages) {
    line(`NRIC No  :   ${d.landlordNric}`,159.9,135,352);
    wrap(`Address  :   ${d.landlordAddress}`,159.9,148.2,349,{size:10.8,line:12,maxLines:2});
    line(`Contact  :   ${d.landlordContact||'—'}`,159.9,173.2,349);
-   line(`Bank Account No : ${[d.landlordBank,d.landlordAccount].filter(Boolean).join(' / ')||'—'}`,159.9,192.1,353);
+   line(`Bank Account No : ${[d.landlordBank,d.landlordAccount].filter(Boolean).join(' ')||'—'}`,159.9,192.1,353);
    line(`Name     :   ${d.tenantName}`,159.9,247,352);
    line(`NRIC No  :   ${d.tenantNric}`,159.9,260,352);
    wrap(`Address  :   ${d.tenantAddress}`,159.9,273,349,{size:10.7,line:12,maxLines:2});

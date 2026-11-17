@@ -1,6 +1,6 @@
 # Repository people list
 
-For the current trial, the website loads `demo-people.json` from GitHub Pages automatically. Section 02 and section 05 show dropdowns of names, and selecting a person fills the IC. There is no upload/import control. Keep this public file fictional. A person may have both landlord and witness roles; manual entry remains available.
+For the current trial, the website loads `demo-people.json` from GitHub Pages automatically. Section 02 and section 05 show dropdowns of names, and selecting a person fills the IC. There is no upload/import control. Keep this public file fictional. A person may have both landlord and witness roles; names are selected directly in the legal-name and witness-name dropdowns.
 
 Use this format (all example identities below are fictional). ICs must be strings to preserve leading zeros. Version 1 accepts 12 or 14 digits, with or without 6-2-4 or 6-2-6 hyphens.
 
