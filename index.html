@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RentHouse GJX — Tenancy agreement generator</title>
+  <meta name="description" content="Create a 12-page unsigned tenancy agreement locally in your browser using an editable, privacy-safe form." />
+  <link rel="stylesheet" href="styles.css" />
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="topbar"><div class="topinner"><div class="brand"><span class="brandicon">⌂</span><span>RentHouse <b>GJX</b></span></div><span class="tag">PRIVATE BY DESIGN · BROWSER ONLY</span></div></header>
+  <main class="shell">
+    <div class="hero">
+      <div><p class="eyebrow">TENANCY AGREEMENT BUILDER</p><h1>A familiar agreement.<br><em>Everything editable.</em></h1><p class="lede">Fill in the details once, then generate a clean, unsigned 12-page PDF that follows the original agreement layout—including the date on page 2.</p></div>
+      <div class="trust"><div class="shield">◈</div><strong>Your details stay in this browser</strong><p>No accounts, uploads or backend. Personal information is added only to the downloaded PDF.</p></div>
+    </div>
+    <div class="workspace">
+      <form id="agreementForm" class="form-panel">
+        <section class="form-section">
+          <div class="section-head"><span class="number">01</span><div><h2>Agreement &amp; term</h2><p>The date is applied to both the cover and page 2.</p></div></div>
+          <div class="fields grid-2">
+            <label>Agreement date<input name="agreementDate" type="date" required /></label>
+            <label>Tenancy start date<input name="startDate" type="date" required /></label>
+            <label>Duration (months)<input name="durationMonths" type="number" min="1" max="120" step="1" value="12" required /></label>
+            <label>Tenancy expiry date<input name="endDate" type="date" required /><small>Calculated automatically; you may override it.</small></label>
+          </div>
+        </section>
+        <section class="form-section">
+          <div class="section-head"><span class="number">02</span><div><h2>Landlord</h2><p>Cover, signature page, schedule and all footers.</p></div></div>
+          <div class="fields grid-2">
+            <label>Full legal name<input name="landlordName" placeholder="As shown on NRIC" required maxlength="100" /></label>
+            <label>NRIC / ID<input name="landlordNric" placeholder="XXXXXX-XX-XXXX" required maxlength="40" /></label>
+            <label class="span-2">Mailing address<textarea name="landlordAddress" rows="2" placeholder="Full landlord address" required maxlength="240"></textarea></label>
+            <label>Contact number<input name="landlordContact" placeholder="Optional" maxlength="50" /></label>
+            <label>Bank & account<input name="landlordBank" placeholder="Bank name and account number" maxlength="100" /></label>
+          </div>
+        </section>
+        <section class="form-section">
+          <div class="section-head"><span class="number">03</span><div><h2>Tenant</h2><p>Names, NRICs and addresses update everywhere they appear.</p></div></div>
+          <div class="fields grid-2">
+            <label>Full legal name<input name="tenantName" placeholder="As shown on NRIC" required maxlength="100" /></label>
+            <label>NRIC / ID<input name="tenantNric" placeholder="XXXXXX-XX-XXXX" required maxlength="40" /></label>
+            <label class="span-2">Mailing address<textarea name="tenantAddress" rows="2" required placeholder="Full tenant address" maxlength="240"></textarea></label>
+            <label class="span-2">Contact number<input name="tenantContact" placeholder="Optional" maxlength="50" /></label>
+          </div>
+        </section>
+        <section class="form-section">
+          <div class="section-head"><span class="number">04</span><div><h2>Property &amp; payments</h2><p>All monetary amounts update numerically and in words.</p></div></div>
+          <div class="fields grid-2">
+            <label class="span-2">Rented property full address<textarea name="propertyAddress" rows="2" placeholder="Unit number, building, street, postcode and city" required maxlength="240"></textarea></label>
+            <label>Monthly rental (RM)<input name="monthlyRent" type="number" min="0" max="999999999" step="0.01" required placeholder="2500" /></label>
+            <label>Rent due day of month<input name="dueDay" type="number" min="1" max="28" step="1" value="7" required /></label>
+            <label>Security deposit (RM)<input name="securityDeposit" type="number" min="0" max="999999999" step="0.01" required /></label>
+            <label>Utilities deposit (RM)<input name="utilitiesDeposit" type="number" min="0" max="999999999" step="0.01" required /></label>
+            <label>Access card deposit (RM)<input name="accessDeposit" type="number" min="0" max="999999999" step="0.01" required /></label>
+          </div>
+          <div class="subtle"><button type="button" id="autoDeposit" class="textbtn">Calculate suggested deposits</button><span>Security = 2× rent; utilities = 0.5× rent. Adjust freely.</span></div>
+        </section>
+        <section class="form-section">
+          <div class="section-head"><span class="number">05</span><div><h2>Unsigned witnesses</h2><p>All four signature lines remain blank. Only printed names and IDs appear.</p></div></div>
+          <div class="fields grid-2">
+            <label>Landlord witness name<input name="witness1Name" maxlength="100" placeholder="Witness full name" /></label>
+            <label>Landlord witness NRIC<input name="witness1Nric" maxlength="40" placeholder="Witness NRIC" /></label>
+            <label>Tenant witness name<input name="witness2Name" maxlength="100" placeholder="Witness full name" /></label>
+            <label>Tenant witness NRIC<input name="witness2Nric" maxlength="40" placeholder="Witness NRIC" /></label>
+          </div>
+          <label class="checkrow"><input name="sameWitness" type="checkbox" /> Use the landlord's witness for the tenant too</label>
+        </section>
+        <section class="form-section">
+          <div class="section-head"><span class="number">06</span><div><h2>Usage, renewal &amp; inventory</h2><p>Page 9 and its inventory list are editable.</p></div></div>
+          <div class="fields">
+            <label>Permitted use<input name="permittedUse" maxlength="170" value="Strictly for the PRIVATE RESIDENCE purpose only." /></label>
+            <label>Renewal option (up to two lines)<textarea name="renewalOption" rows="2" maxlength="340">One (1) year at prevailing market rate at the time of the renewal or as the landlord and the Tenant mutually agreed thereon.</textarea></label>
+            <label>Inventory — one item per line<textarea name="inventory" rows="10" maxlength="2500" placeholder="3 units air conditioners&#10;1 set kitchen cabinet&#10;1 set wardrobe (master bedroom)"></textarea><small>Supports up to 24 lines. Existing source property photos are not bundled in this public project.</small></label>
+            <label>Property photos (optional, up to 10)<input name="photos" id="photos" type="file" accept="image/jpeg,image/png" multiple /><small>Images stay on your device. Auto-arranged (1, 2, or 4 per page), retaining their aspect ratio.</small><small id="photoLayoutSummary" role="status" aria-live="polite"></small></label>
+          </div>
+        </section>
+        <div class="actions"><p id="formMessage" class="message" role="status" aria-live="polite"></p><button type="submit" id="generateBtn" class="primary">Generate 12-page PDF <span>↗</span></button><span class="actionhint">Unsigned PDF · No original stamp certificate</span></div>
+      </form>
+      <aside class="side-panel">
+        <div class="panel-sticky"><div class="aside-title"><span>DOCUMENT OVERVIEW</span><span class="pagecount">12 PAGES</span></div>
+          <div class="paper"><span class="paper-top">TENANCY AGREEMENT</span><div class="paper-center"><span class="paper-rule"></span><strong id="previewLandlord">LANDLORD</strong><span>AND</span><strong id="previewTenant">TENANT</strong><span class="paper-rule"></span><b>RENTAL AGREEMENT</b><small id="previewAddress">PROPERTY ADDRESS</small></div><span class="paper-bottom" id="previewDates">—</span></div>
+          <div class="summary"><div><span>Monthly rent</span><strong id="previewRent">—</strong></div><div><span>Tenancy period</span><strong id="previewTerm">12 months</strong></div><div><span>End date</span><strong id="previewEnd">—</strong></div></div>
+          <div class="privacy-note"><strong>Important document checks</strong><p>Review dates, NRICs, deposits and legal wording before signature. The original stamp certificate (page 13) is intentionally excluded; a revised agreement may need fresh stamping.</p></div>
+          <a class="source-link" href="assets/blank-tenancy-template.pdf" download>View blank PDF template ↗</a>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <footer>RentHouse GJX · Client-side tenancy document generator · Not legal advice</footer>
+</body>
+</html>

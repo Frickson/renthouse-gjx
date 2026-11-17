@@ -1,0 +1,12 @@
+# Never commit filled agreements, people's IDs, or property photos.
+*.pdf
+!assets/blank-tenancy-template.pdf
+*.jpg
+*.jpeg
+# Keep only pre-sanitized template PNG assets; do not commit personal photos.
+!assets/page-*.png
+.DS_Store
+# Never publish browser-test artifacts, original reference scans or sample tenant data.
+/tests/
+/assets/template-page-*.png
+/working/
