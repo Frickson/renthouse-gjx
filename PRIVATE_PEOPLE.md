@@ -1,6 +1,6 @@
 # Repository people list
 
-For the current trial, the website loads `demo-people.json` from GitHub Pages automatically. Section 02 and section 05 show dropdowns of names, and selecting a person fills the IC. There is no upload/import control. Keep this public file fictional. A person may have both landlord and witness roles; names are selected directly in the legal-name and witness-name dropdowns.
+For the current trial, the website loads `demo-people.json` from GitHub Pages automatically. Section 02 and section 05 show dropdowns of names, and selecting a person fills the IC. There is no upload/import control. Keep this public file fictional. A person may have both landlord and witness roles; names can be selected or typed directly in the legal-name and witness-name fields.
 
 Use this format (all example identities below are fictional). ICs must be strings to preserve leading zeros. Version 1 accepts 12 or 14 digits, with or without 6-2-4 or 6-2-6 hyphens.
 
@@ -31,3 +31,5 @@ GitHub Actions Secrets cannot be fetched by this static website at runtime. Inje
 The usual 12-digit Malaysian NRIC uses 6-2-4 formatting. The app also accepts the requested 14-digit 6-2-6 format, without adding or removing digits.
 
 For a public trial, `demo-people.json` loads fictional landlord and witness choices automatically. Keep that file fictional; real names and ICs require a private authenticated service.
+
+Name fields use native suggestions and allow manual typing. Built-in fictional suggestions remain usable if the repository JSON request fails.

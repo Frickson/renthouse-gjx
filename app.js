@@ -36,9 +36,19 @@ const selectors=[['landlordPerson','landlord','landlordName','landlordNric'],['w
 function populatePeople(next){
  people=next;
  for(const [id,role] of selectors){
-  const select=$('#'+id);select.replaceChildren(new Option(role==='landlord'?'Select landlord':'Select witness',''));
-  for(const p of people.filter(p=>p.roles.includes(role)))select.add(new Option(p.name,p.id));
+  const list=$('#'+id+'Options');list.replaceChildren();
+  for(const p of people.filter(p=>p.roles.includes(role))){
+   const option=new Option(p.name,p.name);option.dataset.ic=p.ic;list.append(option);
+  }
  }
+}
+function autofillPerson(id,ic){
+ const input=$('#'+id);
+ const option=Array.from($('#'+id+'Options').options).find(p=>p.value.toLowerCase()===input.value.trim().toLowerCase());
+ const previous=input.dataset.autofilledIc;
+ if(option){set(ic,formatIC(option.dataset.ic));input.dataset.autofilledIc=field(ic).value;}
+ else if(previous&&field(ic).value===previous){set(ic,'');delete input.dataset.autofilledIc;}
+ validateIC(field(ic));
 }
 fetch('demo-people.json').then(response=>{
  if(!response.ok)throw new Error('Demo list unavailable');
@@ -47,15 +57,16 @@ fetch('demo-people.json').then(response=>{
  populatePeople(parsePeople(text));
  $('#peopleMessage').textContent='Fictional demo names loaded. Select a landlord or witness name to try autofill.';
 }).catch(()=>{
- $('#peopleMessage').textContent='Name list unavailable. Please reload to try again.';
+ $('#peopleMessage').textContent='Using built-in demo names. You can also type any name and IC manually.';
 });
 for(const [id,role,name,ic] of selectors){
- $('#'+id).addEventListener('change',()=>{
-  const person=people.find(p=>p.id===$('#'+id).value);
-  set(ic,person?.ic||'');validateIC(field(ic));
+ const onNameChange=()=>{
+  autofillPerson(id,ic);
   if(id==='witness1Person')updateWitness();
   updatePreview();clearGenerated();
- });
+ };
+ $('#'+id).addEventListener('input',onNameChange);
+ $('#'+id).addEventListener('change',onNameChange);
 }
 
 let currentObjectURL = null;
@@ -67,7 +78,6 @@ const PAGE_W = 595.44, PAGE_H = 841.68, RENDER_SCALE = 2;
 function field(name) {return form.elements.namedItem(name)}
 function value(name) {
  const input=field(name);
- if(input?.hasAttribute('data-person'))return people.find(p=>p.id===input.value)?.name||'';
  return String(input?.value ?? '').trim();
 }
 function set(name, val) {field(name).value = String(val)}
@@ -118,7 +128,7 @@ form.addEventListener('input', event=> {
   if(['witness1Name','witness1Nric'].includes(event.target.name))updateWitness();
   updatePreview();if(generatedFile)clearGenerated();
 });
-field('sameWitness').addEventListener('change',()=>{field('witness2Nric').readOnly=field('sameWitness').checked;$('#witness2Person').disabled=field('sameWitness').checked;updateWitness(); if(generatedFile)clearGenerated()});
+field('sameWitness').addEventListener('change',()=>{field('witness2Nric').readOnly=field('sameWitness').checked;field('witness2Name').readOnly=field('sameWitness').checked;updateWitness(); if(generatedFile)clearGenerated()});
 field('photos').addEventListener('change',()=>{updatePhotoLayout(); if(generatedFile)clearGenerated()});
 $('#autoDeposit').addEventListener('click',()=>{
   const rent=Number(value('monthlyRent')); if(!Number.isFinite(rent)||rent<=0){status.textContent='Enter the monthly rental first.';return;}

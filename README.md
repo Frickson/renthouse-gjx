@@ -63,10 +63,12 @@ This project is a static website; no API keys, environment variables, hosting pa
 
 IC fields accept 12 or 14 digits, with optional 6-2-4 or 6-2-6 hyphens and automatically insert hyphens when leaving the field. Both the standard NRIC format and the requested 6-2-6 format are supported. Bank and account number are separate; the bank dropdown displays Maybank, Hong Leong Bank, and CIMB Bank Sdn Bhd. The PDF bank line uses the abbreviation and account number separated by a space (for example, HLB followed by the account number).
 
-Landlord and witness choices load automatically from the repository’s `demo-people.json`; selecting a name fills its IC. There is no import control. See [list format and privacy](PRIVATE_PEOPLE.md). The legal-name and witness-name fields are dropdowns; selecting a name fills its IC. The same-witness option remains available.
+Landlord and witness choices load automatically from the repository’s `demo-people.json`; selecting a name fills its IC. There is no import control. See [list format and privacy](PRIVATE_PEOPLE.md). The legal-name and witness-name fields are editable dropdowns; choosing a listed name fills its IC, and any name/IC can also be entered manually. The same-witness option remains available.
 
 Inventory uses quantities for the source agreement's item types, plus tables and chairs. Zero quantities are omitted. Additional items can be entered one per line; the combined PDF list is limited to 24 rows.
 
 Run `node --test` for form data validation tests. Browser/PDF regression artifacts stay outside the repository.
 
 The public `demo-people.json` contains fictional names and ICs only and loads the dropdowns automatically for testing. Never replace it with real personal data. There is no file-import UI.
+
+Name fields use native suggestions and allow manual typing. Built-in fictional suggestions remain usable if the repository JSON request fails.
